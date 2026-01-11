@@ -9,7 +9,7 @@ Note: my clusters are managed through this repo, please only submit a request if
 ### Network Layout
 
 ```mermaid
-FlowchartTD
+Flowchart TD
 
 Network_Uplink(["Network Uplink"])
 
