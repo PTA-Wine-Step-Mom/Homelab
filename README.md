@@ -4,18 +4,8 @@ This is basic documentation of my homelab. For both personal documentation and f
 
 Note: my clusters are managed through this repo, please only submit a request if it is a genuine suggestion :)
 
-## Lab
+### Homelab Overview
 
-### Network Layout
+My homelab consists of three main areas of intrest to me Networking, Automation & Server Hosting. 
 
-```mermaid
-flowchart TD;
-	Network_Uplink(["Network Uplink"]);
-	Network_Uplink-->Network_Router(["Router"]);
-	Network_Router--"1-5"-->Network_Switch(["5x 1Gbps Switch"]);
-	Network_Switch--"1-1"-->ProxmoxCluster001(["ProxmoxCluster001"]);
-	Network_Switch--"1-2"-->ProxmoxCluster002(["ProxmoxCluster002"]);
-	Network_Switch--"1-3"-->MiscDockerDevice(["MiscDockerDevice"]);
-	Network_Switch--"1-4"-->LAN_Management(["LAN Management Link"]);
-
-```
+Please see Wiki.md for more information on the Homelab
