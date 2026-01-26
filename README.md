@@ -2,6 +2,14 @@
 
 A Linux-based remote desktop platform inspired by Azure RDS, implemented using Proxmox VE, Terraform (VM lifecycle), Ansible (configuration), and Linux-native services (XRDP, Guacamole, NFS, HAProxy).
 
+## Quick Links
+
+- **Overview:** [Docs/Overview/README.md](Docs/Overview/README.md)
+- **Architecture:** [Docs/Architecture/Platform.md](Docs/Architecture/Platform.md), [Networking.md](Docs/Architecture/Networking.md)
+- **Runbooks:** [Docs/Runbooks/](Docs/Runbooks/) (Bootstrap, Provision, Configure, Templates, Demo)
+- **Decisions:** [Docs/Decisions/](Docs/Decisions/) (ADRs)
+- **Build Log:** [Docs/Build-Log/](Docs/Build-Log/)
+
 ### Architecture at a Glance
 - Proxmox VE hypervisor hosts VMs
 - Terraform manages VM lifecycle and basic networking/storage
@@ -30,7 +38,12 @@ See: Docs/Architecture/Platform.md and Docs/Architecture/Networking.md
 - scripts/: Helper scripts (bootstrap, validate, demo)
 
 ### Milestones & Branching
-TBD
+
+Trunk-based development with short-lived feature branches:
+
+- **M01: Proxmox Templates** — branch: `feat/proxmox-templates`  
+  Build reusable VM templates (base, desktop) with cloud-init and SSH key auth.  
+  See: [Docs/Runbooks/Build-Proxmox-Templates.md](Docs/Runbooks/Build-Proxmox-Templates.md)
 
 ### Scope & Non-goals
 - Demo only; not a production SaaS
