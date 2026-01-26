@@ -1,0 +1,22 @@
+flowchart LR
+  subgraph Edge
+    HAProxy((HAProxy))
+  end
+  subgraph Gateway
+    GuacamoleUI[Guacamole Web UI]
+    Guacd[guacd]
+  end
+  subgraph SessionHosts
+    XRDP1[xrdp-host-001]
+    XRDP2[xrdp-host-002]
+  end
+  subgraph Storage
+    NFS[(NFS Server)]
+  end
+
+  HAProxy --> GuacamoleUI
+  GuacamoleUI --> Guacd
+  Guacd --> XRDP1
+  Guacd --> XRDP2
+  XRDP1 --- NFS
+  XRDP2 --- NFS
