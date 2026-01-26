@@ -1,0 +1,107 @@
+#cloud-config
+# Cloud-init configuration for tpl-rds-desktop-u2204 clones
+# Used by Terraform to customize session host instances
+#
+# Usage: Pass this (or a variant) as user_data to Proxmox VM creation
+# Example (Terraform):
+#   cloudinit_config = templatefile("${path.module}/cloud-init/session-host-user-data.yaml", {
+#     hostname = "rds-host-001"
+#     ssh_keys = var.ssh_public_keys
+#     nfs_server = var.nfs_server_ip
+#   })
+
+# Hostname and FQDN (should be overridden per-instance)
+hostname: rds-host-001
+fqdn: rds-host-001.local
+
+# Timezone
+timezone: UTC
+
+# User accounts
+users:
+  - name: ubuntu
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+    ssh-authorized-keys:
+      # Insert public SSH key(s) here or pass from Terraform variable
+      # - ssh-rsa AAAA...
+      # Example: ${ssh_public_key}
+
+# Packages to install on first boot
+packages:
+  # Base tools
+  - curl
+  - vim
+  - net-tools
+  - htop
+  - git
+  - software-properties-common
+  
+  # Display and X11 (XFCE already installed in template)
+  - xvfb
+  - xauth
+  
+  # Audio support for RDP
+  - pulseaudio
+  - alsa-utils
+  - pavucontrol
+  
+  # NFS client (for shared storage)
+  - nfs-common
+
+# Mounts for shared storage (example; configure per your NFS server)
+# Uncomment and configure if using NFS for user profiles or data
+# mounts:
+#   - [ "nfs-server.local:/export/rds-profiles", "/mnt/profiles", "nfs", "defaults,hard,intr", "0", "0" ]
+#   - [ "nfs-server.local:/export/rds-data", "/mnt/data", "nfs", "defaults,hard,intr", "0", "0" ]
+
+# Run arbitrary commands after other config
+runcmd:
+  # Update package manager and upgrade system packages
+  - apt-get update
+  - apt-get upgrade -y
+  
+  # Create mount points (if using NFS; adjust paths as needed)
+  # - mkdir -p /mnt/profiles /mnt/data
+  # - chmod 755 /mnt/profiles /mnt/data
+  
+  # Enable and start NFS client services
+  - systemctl enable nfs-client.target
+  - systemctl start nfs-client.target
+  
+  # Verify QEMU Guest Agent is running
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
+  
+  # Configure XFCE for headless/RDP use (example)
+  # - echo "XFCE_DESKTOP=1" >> /etc/environment
+  
+  # Log completion
+  - echo "Cloud-init session-host configuration completed at $(date)" >> /var/log/cloud-init-output.log
+
+# Write files (optional; example for mount/RDP configuration)
+write_files:
+  - path: /etc/cloud/cloud.cfg.d/99-custom.cfg
+    owner: root:root
+    permissions: '0644'
+    content: |
+      # Custom cloud-init config for session hosts
+      ssh_pwauth: false
+      disable_root: true
+  
+  # Example: NFS mount helper script (commented; adjust for your NFS server)
+  # - path: /usr/local/bin/mount-nfs-profiles.sh
+  #   owner: root:root
+  #   permissions: '0755'
+  #   content: |
+  #     #!/bin/bash
+  #     NFS_SERVER=${nfs_server}
+  #     mount -t nfs -o defaults,hard,intr $NFS_SERVER:/export/rds-profiles /mnt/profiles
+  #     mount -t nfs -o defaults,hard,intr $NFS_SERVER:/export/rds-data /mnt/data
+
+# Disable password authentication
+ssh_pwauth: false
+
+# Final message
+final_message: "Cloud-init for rds-desktop-u2204 (session host) completed in $UPTIME seconds"
