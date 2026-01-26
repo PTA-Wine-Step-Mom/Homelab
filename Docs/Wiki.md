@@ -4,13 +4,35 @@
 
 ### Network Layout
 
+# Overview
+
+This wiki page links into the docs-first structure for the Remote Desktop Platform on Proxmox.
+
+- Architecture overview: see [Docs/Architecture/Platform.md](Docs/Architecture/Platform.md)
+- Networking model: see [Docs/Architecture/Networking.md](Docs/Architecture/Networking.md)
+- Runbooks: see [Docs/Runbooks](Docs/Runbooks)
+
+Network Layout (Homelab):
+
 ```mermaid
-flowchart TD;
-	Network_Uplink(["Network Uplink"]);
-	Network_Uplink-->Network_Router(["Router"]);
-	Network_Router--"1-5"-->Network_Switch(["5x 1Gbps Switch"]);
-	Network_Switch--"1-1"-->ProxmoxCluster001(["ProxmoxCluster001"]);
-	Network_Switch--"1-2"-->ProxmoxCluster002(["ProxmoxCluster002"]);
-	Network_Switch--"1-3"-->MiscDockerDevice(["MiscDockerDevice"]);
-	Network_Switch--"1-4"-->LAN_Management(["LAN Management Link"]);
+flowchart LR
+	Router1((Router))
+
+	subgraph Switches
+		Switch1((Switch))
+		Switch2((Switch))
+	end
+
+	subgraph Proxmox Cluster 001
+		ProxmoxCluster001((Proxmox Cluster 001))
+	end
+
+	subgraph Proxmox Cluster 002
+		ProxmoxCluster002((Proxmox Cluster 002))
+	end
+
+	Router1 --> Switch1
+	Router1 --> Switch2
+	Switch1 --> ProxmoxCluster001
+	Switch2 --> ProxmoxCluster002
 ```
