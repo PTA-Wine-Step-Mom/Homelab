@@ -2,7 +2,7 @@
 
 **Branch:** feat/proxmox-templates  
 **Milestone:** M01  
-**Goal:** Create reusable Proxmox VM templates (rds-base-u2204, rds-desktop-u2204) with cloud-init and SSH key authentication support.
+**Goal:** Create reusable Proxmox VM templates (rds-base-u2404-s, rds-desktop-u2404-d) with cloud-init and SSH key authentication support.
 
 ---
 
@@ -20,8 +20,8 @@
 - GNOME deferred to future update
 
 **Template Strategy: One base + service via Ansible**
-- Single `tpl-rds-base-u2204` template contains minimal OS config
-- `tpl-rds-desktop-u2204` cloned from base; adds XFCE and display libraries only
+- Single `tpl-rds-base-u2404-s` template contains minimal OS config
+- `tpl-rds-desktop-u2404-d` cloned from base; adds XFCE and display libraries only
 - Service installation (XRDP, Guacamole, HAProxy, NFS client) deferred to Ansible roles
 - Reduces template maintenance; Ansible becomes source of truth for service config
 

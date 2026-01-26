@@ -7,10 +7,10 @@ The platform requires reusable, non-interactive VM templates to support Terrafor
 ## Decision
 
 ### Base OS and Version
-**Choice:** Ubuntu Server 22.04 LTS (Jammy Jellyfish)
+**Choice:** Ubuntu Server 24.04.03 LTS (Noble Numbat)
 
 **Rationale:**
-- LTS release ensures 5-year support window (April 2027)
+- LTS release ensures 5-year support window (April 2029)
 - Mature ecosystem; widely used in RDS and cloud infrastructure
 - cloud-init first-class support with predictable behavior
 - Community and recruitment appeal for demo/learning context
@@ -28,8 +28,8 @@ The platform requires reusable, non-interactive VM templates to support Terrafor
 **One base template + role-specific cloning**
 
 **Rationale:**
-- Single `rds-base-u2204` template contains minimal, reusable OS configuration
-- `rds-desktop-u2204` cloned from base; adds XFCE and display libraries only
+- Single `rds-base-u2404-s` template contains minimal, reusable OS configuration
+- `rds-desktop-u2404-d` cloned from base; adds XFCE and display libraries only
 - Service installation (XRDP, Guacamole, etc.) deferred to Ansible roles post-cloning
 - Reduces template build/maintenance burden; Ansible becomes source of truth for service config
 

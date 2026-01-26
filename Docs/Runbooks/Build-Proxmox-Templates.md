@@ -3,23 +3,23 @@
 ## Goal
 
 Create two reusable Proxmox VM templates that support cloud-init, SSH key authentication, cloning, and non-interactive provisioning:
-1. **tpl-rds-base-u2204**: Minimal Ubuntu 22.04 base
-2. **tpl-rds-desktop-u2204**: Ubuntu 22.04 with XFCE desktop for session hosts
+1. **tpl-rds-base-u2404-s**: Minimal Ubuntu 24.04.03-liveserver base
+2. **tpl-rds-desktop-u2404-d**: Ubuntu 24.04.03-desktop with XFCE desktop for session hosts
 
 Templates are the foundation for Terraform VM provisioning (M02).
 
 ## Prerequisites
 
 - Proxmox VE node with SSH access and sufficient storage (local-lvm or shared NFS)
-- Ubuntu 22.04 Server ISO downloaded to Proxmox (e.g., `/var/lib/vz/template/iso/ubuntu-22.04-live-server-amd64.iso`)
+- Ubuntu 24.04.03 Server ISO (24.04.03-liveserver) uploaded to Proxmox (e.g., `/var/lib/vz/template/iso/ubuntu-24.04.03-live-server-amd64.iso`)
 - Proxmox account with VM creation and modification privileges
 - Linux workstation for ISO verification (optional)
 
 ## Template Specifications
 
-| Property | tpl-rds-base-u2204 | tpl-rds-desktop-u2204 |
+| Property | tpl-rds-base-u2404-s | tpl-rds-desktop-u2404-d |
 |----------|-------------------|----------------------|
-| **OS** | Ubuntu Server 22.04 LTS | Ubuntu Server 22.04 LTS + XFCE |
+| **OS** | Ubuntu Server 24.04.03-liveserver | Ubuntu Server 24.04.03-desktop + XFCE |
 | **CPU** | 2 vCPU (adjustable per clone) | 2 vCPU (adjustable per clone) |
 | **Memory** | 2 GB (adjustable per clone) | 2 GB (adjustable per clone) |
 | **Storage** | 20 GB (local-lvm or NFS) | 30 GB (local-lvm or NFS) |
@@ -27,14 +27,14 @@ Templates are the foundation for Terraform VM provisioning (M02).
 | **Cloud-Init** | Enabled (cloudinit) | Enabled (cloudinit) |
 | **QEMU Agent** | Enabled | Enabled |
 | **SSH** | Keys only; password auth disabled | Keys only; password auth disabled |
-| **Notes Field** | `tpl-rds-base-u2204 v1.0 [date]` | `tpl-rds-desktop-u2204 v1.0 [date]` |
+| **Notes Field** | `tpl-rds-base-u2404-s v1.0 [date]` | `tpl-rds-desktop-u2404-d v1.0 [date]` |
 
-## Build Steps: tpl-rds-base-u2204
+## Build Steps: tpl-rds-base-u2404-s
 
 ### 1. Create Base VM via Proxmox UI or CLI
 
 **Via UI:**
-- Proxmox → Create VM → General → Name: `tpl-rds-base-u2204`, VM ID: auto
+- Proxmox → Create VM → General → Name: `tpl-rds-base-u2404-s`, VM ID: auto
 - OS: Linux, ISO: Ubuntu 22.04 Server
 - System: SCSI controller (VirtIO-SCSI), BIOS (OVMF/UEFI)
 - Disks: 20 GB (local-lvm or NFS storage)
@@ -45,7 +45,7 @@ Templates are the foundation for Terraform VM provisioning (M02).
 
 **Alternatively via CLI:**
 ```bash
-qm create 100 --name tpl-rds-base-u2204 \
+qm create 100 --name tpl-rds-base-u2404-s \
   --ide2 local:iso/ubuntu-22.04-live-server-amd64.iso,media=cdrom \
   --sockets 1 --cores 2 --memory 2048 \
   --net0 virtio,bridge=vmbr0 \
@@ -102,7 +102,7 @@ sudo poweroff
 ```
 
 **Via Proxmox UI:**
-- Right-click VM `tpl-rds-base-u2204` → Convert to Template
+- Right-click VM `tpl-rds-base-u2404-s` → Convert to Template
 
 **Alternatively via CLI:**
 ```bash
@@ -112,30 +112,30 @@ qm set 100 --template 1
 ### 5. Edit Template Notes
 
 **Via Proxmox UI:**
-- Select template → Notes tab → Add: `tpl-rds-base-u2204 v1.0 [date] | Ubuntu 22.04 LTS, SSH key-only, cloud-init enabled`
+- Select template → Notes tab → Add: `tpl-rds-base-u2404-s v1.0 [date] | Ubuntu 24.04.03-liveserver, SSH key-only, cloud-init enabled`
 
 ---
 
-## Build Steps: tpl-rds-desktop-u2204
+## Build Steps: tpl-rds-desktop-u2404-d
 
 ### 1. Clone Base Template
 
 **Via Proxmox UI:**
-- Right-click `tpl-rds-base-u2204` → Clone
+- Right-click `tpl-rds-base-u2404-s` → Clone
 - New ID: auto-increment (e.g., 101)
-- New name: `tpl-rds-desktop-u2204`
+- New name: `tpl-rds-desktop-u2404-d`
 - Mode: Full clone
 - Storage: Same as base template
 
 **Alternatively via CLI:**
 ```bash
-qm clone 100 101 --name tpl-rds-desktop-u2204 --full
+qm clone 100 101 --name tpl-rds-desktop-u2404-d --full
 ```
 
 ### 2. Boot Cloned VM and Install Desktop
 
 **Via Proxmox UI:**
-- Right-click `tpl-rds-desktop-u2204` → Start
+- Right-click `tpl-rds-desktop-u2404-d` → Start
 - Wait for cloud-init to finish (check logs)
 
 **SSH into the VM:**
@@ -168,7 +168,7 @@ sudo poweroff
 ```
 
 **Via Proxmox UI:**
-- Right-click `tpl-rds-desktop-u2204` → Convert to Template
+- Right-click `tpl-rds-desktop-u2404-d` → Convert to Template
 
 **Alternatively via CLI:**
 ```bash
@@ -178,7 +178,7 @@ qm set 101 --template 1
 ### 4. Edit Template Notes
 
 **Via Proxmox UI:**
-- Select template → Notes tab → Add: `tpl-rds-desktop-u2204 v1.0 [date] | Ubuntu 22.04 LTS + XFCE 4.18, SSH key-only, cloud-init enabled, for RDP session hosts`
+- Select template → Notes tab → Add: `tpl-rds-desktop-u2404-d v1.0 [date] | Ubuntu 24.04.03-liveserver + XFCE 4.18, SSH key-only, cloud-init enabled, for RDP session hosts`
 
 ---
 
@@ -186,7 +186,7 @@ qm set 101 --template 1
 
 ### Test 1: Template Cloning (Proxmox UI)
 
-1. Right-click `tpl-rds-base-u2204` → Clone → `test-base-clone`
+1. Right-click `tpl-rds-base-u2404-s` → Clone → `test-base-clone`
 2. Boot clone; verify cloud-init applies
 3. SSH login succeeds with SSH key; password auth fails
 4. Verify QEMU Guest Agent running: `sudo systemctl status qemu-guest-agent`
@@ -196,7 +196,7 @@ qm set 101 --template 1
 
 ### Test 2: Desktop Template Cloning
 
-1. Right-click `tpl-rds-desktop-u2204` → Clone → `test-desktop-clone`
+1. Right-click `tpl-rds-desktop-u2404-d` → Clone → `test-desktop-clone`
 2. Boot clone; verify cloud-init applies
 3. SSH login succeeds with SSH key
 4. Verify XFCE installed: `which xfce4-session`

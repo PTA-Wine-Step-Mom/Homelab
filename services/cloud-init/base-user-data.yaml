@@ -1,5 +1,5 @@
 #cloud-config
-# Cloud-init configuration for tpl-rds-base-u2204 clones
+# Cloud-init configuration for tpl-rds-base-u2404-s clones
 # Used by Terraform to customize base instances (servers, gateways)
 #
 # Usage: Pass this (or a variant) as user_data to Proxmox VM creation
@@ -65,4 +65,4 @@ write_files:
 ssh_pwauth: false
 
 # Final message
-final_message: "Cloud-init for tpl-rds-base-u2204 completed in $UPTIME seconds"
+final_message: "Cloud-init for tpl-rds-base-u2404-s completed in $UPTIME seconds"
