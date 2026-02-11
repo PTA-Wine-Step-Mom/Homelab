@@ -1,0 +1,12 @@
+- name: Set hostname
+  uci:
+    key: system.@system[0].hostname
+    value: openwrt-router
+
+- name: Set timezone
+  uci:
+    key: system.@system[0].timezone
+    value: AEST-10AEDT,M10.1.0,M4.1.0/3
+
+- name: Commit system config
+  command: uci commit system

@@ -1,0 +1,10 @@
+- name: Update opkg
+  command: opkg update
+
+- name: Install base packages
+  opkg:
+    name:
+      - htop
+      - tcpdump
+      - luci
+    state: present
